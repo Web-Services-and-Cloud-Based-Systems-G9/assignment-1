@@ -1,12 +1,21 @@
-from flask import Flask, request, redirect
+from flask import Flask, request, redirect, render_template
 import validators
+import os
 
-app = Flask(__name__)
+APP_ROOT = os.path.dirname(os.path.abspath(__file__))   # refers to application_top
+APP_STATIC = os.path.join(APP_ROOT, 'static')
+
+app = Flask('ShortyURL')
 
 URLs = {
 
 }
 IDS_COUNTER = 0
+
+
+@app.route('/home', methods=['GET'])
+def home():
+    return render_template('home.html')
 
 
 @app.route('/<id>', methods=['GET'])
@@ -53,7 +62,7 @@ def delete_one_url(id):
 @app.route('/', methods=['POST'])
 def create_url():
     global IDS_COUNTER
-    url = request.args.get('url')
+    url = request.form.get('url')
     # check for URL correctness
     try:
         if validators.url(url):
@@ -64,19 +73,15 @@ def create_url():
             return "{id}".format(id=IDS_COUNTER - 1), 201
         else:
             return f'Incorrect URL', 401
-    except:
+    except Exception as e:
+        print(e)
         return f'A Error', 500
 
 
 @app.route('/', methods=['GET'])
 def get_urls():
     try:
-        keys = {}
-        i = 0
-        for key in URLs.keys():
-            keys["key {number}".format(number=i)] = (key, URLs[key])
-            i += 1
-        return keys, 200
+        return URLs, 200
     except:
         return f'Unexpected Error', 500
 
@@ -96,6 +101,17 @@ def delete_url():
             return f'Dict is already empty', 404
     except:
         return f'Unexpected Error', 500
+
+
+@app.after_request
+def add_header(response):
+    """
+    Add headers to both force latest IE rendering engine or Chrome Frame,
+    and also to cache the rendered page for 10 minutes.
+    """
+    response.headers['X-UA-Compatible'] = 'IE=Edge,chrome=1'
+    response.headers['Cache-Control'] = 'public, max-age=0'
+    return response
 
 
 if __name__ == "__main__":
