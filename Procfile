@@ -1,1 +1,1 @@
-web: gunicorn ShortyURL:app
+web: waitress-serve --port=$PORT ShortyURL:app
