@@ -27,6 +27,21 @@ html, body{
     margin-bottom: 16px;
 }
 
+.url-edit{
+    flex-direction: row;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.edit-url{
+    padding: 8px;
+    border-radius: 16px;
+    border-opacity: 0.50;
+    border: 1px solid rgba(0, 0, 0, .4);
+    width: 100%;
+}
+
 .my-btn {
     width: 30%;
     cursor: pointer;
@@ -61,12 +76,18 @@ html, body{
     margin: 16px;
 }
 
+.url-total-container{
+    display: flex;
+    flex-direction: column;
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
 .url-container{
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    margin-top: 8px;
-    margin-bottom: 8px;
+    margin-bottom: 4px;
 }
 
 .main-container{
@@ -89,7 +110,7 @@ html, body{
     margin-top: 32px;
     margin-bottom: 16px;
     border-radius: 16px;
-    width: 50%;
+    width: 30%;
     background-color: white;
     box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
 }
@@ -98,6 +119,7 @@ body::after{
     background-image: url("/static/images/cloud.png");
     background-repeat:   repeat;
     background-position: center center;
+    background-size: 30px 30px;
     opacity: 0.03;
     content: "";
     top: 0;

@@ -26,7 +26,8 @@ def get_one_url(id):
             return redirect(URLs[id], 301)
         else:
             return f'Not found', 404
-    except:
+    except Exception as e:
+        print(e)
         return f'Unexpected error', 500
 
 
@@ -37,8 +38,8 @@ def update_one_url(id):
             return f'not found', 404
         else:
             # check url if correct
-            if validators.url(request.args.get('url')):
-                URLs[id] = request.args.get('url')
+            if validators.url(request.form.get('url')):
+                URLs[id] = request.form.get('url')
             else:
                 return f'url error', 400
             return f'Success', 200
@@ -55,7 +56,8 @@ def delete_one_url(id):
         else:
             URLs.pop(id)
             return f'Success', 204
-    except:
+    except Exception as e:
+        print(e)
         return f'Unexpected error', 500
 
 
@@ -82,7 +84,8 @@ def create_url():
 def get_urls():
     try:
         return URLs, 200
-    except:
+    except Exception as e:
+        print(e)
         return f'Unexpected Error', 500
 
 
@@ -99,20 +102,15 @@ def delete_url():
             return f'all items(key, url) in the dict has been removed', 200
         else:
             return f'Dict is already empty', 404
-    except:
+    except Exception as e:
+        print(e)
         return f'Unexpected Error', 500
 
 
-@app.after_request
-def add_header(response):
-    """
-    Add headers to both force latest IE rendering engine or Chrome Frame,
-    and also to cache the rendered page for 10 minutes.
-    """
-    response.headers['X-UA-Compatible'] = 'IE=Edge,chrome=1'
-    response.headers['Cache-Control'] = 'public, max-age=0'
-    return response
-
-
 if __name__ == "__main__":
-    app.run(debug=True)
+    from waitress import serve
+    debug = False
+    if debug:
+        app.run(debug=True)
+    else:
+        serve(app, host="0.0.0.0", port=8080)

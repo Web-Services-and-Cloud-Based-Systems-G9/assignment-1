@@ -18,24 +18,27 @@ function reloadUrls(){
                         const shortened = e[0];
                         const original = e[1]
                         return `
-                            <div class="url-container">
-                                <a class="my_url" target="_blank" href="${`/${shortened}`}">
-                                    ${shortened}
-                                </a>
-                                <div class="original-url">
-                                    ${original}
+                            <div class="url-total-container">
+                                <div class="url-container">
+                                    <a class="my_url" target="_blank" href="${`/${shortened}`}">
+                                        ${shortened}
+                                    </a>
+                                    <div class="original-url" id='original-url-${shortened}'>
+                                        ${original}
+                                    </div>
+                                    <div class="delete-url" style="cursor: pointer">
+                                        <span id="edit-${shortened}" class="material-icons" style="color: #aaa"> edit </span>
+                                        <span id="delete-${shortened}" class="material-icons" style="color: #bc0031">close</span>
+                                    </div>
                                 </div>
-                                <div class="delete-url" style="cursor: pointer">
-                                    <span id="delete-${shortened}" class="material-icons" style="color: #bc0031">close</span>
+                                <div class="url-edit" id="url-edit-${shortened}">
                                 </div>
                             </div>
                         `;
                     }).join(' ')}
                 `);
-                $('.delete-url').click((ev) => {
-                    const urlId = $(this).children('span').attr('id');
-                    console.log($(this).children('span'));
-                    console.log(urlId);
+                $('span[id|="delete"]').click(function(){
+                    const urlId = $(this).attr('id');
                     $.ajax(`/${urlId.split('-')[1]}`, {
                         type: 'DELETE',
                         statusCode: {
@@ -51,6 +54,47 @@ function reloadUrls(){
                                 `);
                             }
                         }
+                    });
+                });
+                $('span[id|="edit"]').click(function(){
+                    const urlId = $(this).attr('id').split('-')[1];
+                    const originalUrl = $(`#original-url-${urlId}`).text().trim();
+                    $(`#url-edit-${urlId}`).append(`
+                        <input type="url" class="edit-url" placeholder=${`${originalUrl}`} value=${`${originalUrl}`}>
+                        <span id=${`fedit-ok-${urlId}`} class="material-icons" style="color: #bc0031; cursor: pointer">check_circle</span>
+                    `);
+                    console.log(urlId, originalUrl);
+                    $('.delete-url').css('display', 'none');
+                    $('span[id|="fedit-ok"]').click(function(){
+                        let newUrl = $('.edit-url').val();
+                        $('#extra-message').empty();
+                        $.ajax(`/${urlId}`, {
+                            type: 'PUT',
+                            data: { url: newUrl },
+                            statusCode: {
+                                200: (res) => {
+                                    $(`#url-edit-${urlId}`).empty();
+                                    $('#new-url').val('');
+                                    $('#extra-message').empty();
+                                    reloadUrls();
+                                },
+                                400: () => {
+                                    $('#extra-message').append(`
+                                       URL format is not correct
+                                    `);
+                                },
+                                404: () => {
+                                    $('#extra-message').append(`
+                                       URL not found
+                                    `);
+                                },
+                                500: () => {
+                                    $('#extra-message').append(`
+                                       'Unknown error'
+                                    `);
+                                }
+                            }
+                        });
                     });
                 });
             },
