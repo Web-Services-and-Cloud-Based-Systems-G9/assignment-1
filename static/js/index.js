@@ -124,7 +124,7 @@ $(document).ready(function(){
                     $('#extra-message').empty();
                     reloadUrls();
                 },
-                401: () => {
+                400: () => {
                     $('#extra-message').append(`
                        URL format is not correct
                     `);

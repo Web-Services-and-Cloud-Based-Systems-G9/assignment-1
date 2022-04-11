@@ -23,7 +23,7 @@ def get_one_url(id):
     try:
         print(URLs.items())
         if id in URLs:
-            return redirect(URLs[id], 301)
+            return redirect(URLs[id], 302)
         else:
             return f'Not found', 404
     except Exception as e:
@@ -74,7 +74,7 @@ def create_url():
             IDS_COUNTER += 1
             return "{id}".format(id=IDS_COUNTER - 1), 201
         else:
-            return f'Incorrect URL', 401
+            return f'Incorrect URL', 400
     except Exception as e:
         print(e)
         return f'A Error', 500
