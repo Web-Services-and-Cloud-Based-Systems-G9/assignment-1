@@ -22,7 +22,7 @@ Implementation details, answer to question 3 and the group members contribution 
     python3 ShortyURL.py
 ```
 
-4. The service will be in the default Flask port, which is usually 5000 (http://127.0.0.1:5000). An user interface to use the service can be found on the ```/home``` path
+4. The service will be in the 8080 port (http://127.0.0.1:8080). An user interface to use the service can be found on the ```/home``` path
 
 Tested on Python 3.8.9. Developed on Flask 2.1.1.
 
