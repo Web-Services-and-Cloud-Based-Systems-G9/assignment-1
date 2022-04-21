@@ -2,6 +2,9 @@ function reloadUrls(){
     $('.urls-box').empty();
     $.ajax("/", {
         type: 'GET',
+        beforeSend: function(request) {
+            request.setRequestHeader("x-access-token", localStorage.getItem('access_token'));
+        },
         statusCode: {
             200: (data) => {
                 console.log(data);
@@ -41,9 +44,17 @@ function reloadUrls(){
                     const urlId = $(this).attr('id');
                     $.ajax(`/${urlId.split('-')[1]}`, {
                         type: 'DELETE',
+                        beforeSend: function(request) {
+                            request.setRequestHeader("x-access-token", localStorage.getItem('access_token'));
+                        },
                         statusCode: {
                             204: (res) => {
                                 reloadUrls();
+                            },
+                            403: () => {
+                                $('#extra-message').append(`
+                                   'Unauthenticated'
+                                `);
                             },
                             404: () => {
                                 reloadUrls();
@@ -69,6 +80,9 @@ function reloadUrls(){
                         let newUrl = $('.edit-url').val();
                         $('#extra-message').empty();
                         $.ajax(`/${urlId}`, {
+                            beforeSend: function(request) {
+                                request.setRequestHeader("x-access-token", localStorage.getItem('access_token'));
+                            },
                             type: 'PUT',
                             data: { url: newUrl },
                             statusCode: {
@@ -81,6 +95,11 @@ function reloadUrls(){
                                 400: () => {
                                     $('#extra-message').append(`
                                        URL format is not correct
+                                    `);
+                                },
+                                403: () => {
+                                    $('#extra-message').append(`
+                                       'Unauthenticated'
                                     `);
                                 },
                                 404: () => {
@@ -97,6 +116,11 @@ function reloadUrls(){
                         });
                     });
                 });
+            },
+            403: () => {
+                $('#extra-message').append(`
+                   'Unauthenticated'
+                `);
             },
             500: (err) => {
                 console.log(err);
@@ -116,6 +140,9 @@ $(document).ready(function(){
         let newUrl = $('#new-url').val();
         $('#extra-message').empty();
         $.ajax('/', {
+            beforeSend: function(request) {
+                request.setRequestHeader("x-access-token", localStorage.getItem('access_token'));
+            },
             type: 'POST',
             data: { url: newUrl },
             statusCode: {
@@ -127,6 +154,11 @@ $(document).ready(function(){
                 400: () => {
                     $('#extra-message').append(`
                        URL format is not correct
+                    `);
+                },
+                403: () => {
+                    $('#extra-message').append(`
+                       'Unauthenticated'
                     `);
                 },
                 500: () => {
@@ -141,12 +173,20 @@ $(document).ready(function(){
     $('#deleteAll').click(() => {
         $.ajax('/', {
             type: 'DELETE',
+            beforeSend: function(request) {
+                request.setRequestHeader("x-access-token", localStorage.getItem('access_token'));
+            },
             statusCode: {
                 200: (res) => {
                     reloadUrls();
                 },
                 404: () => {
                     reloadUrls();
+                },
+                403: () => {
+                    $('#extra-message').append(`
+                       'Unauthenticated'
+                    `);
                 },
                 500: () => {
                     $('#extra-message').append(`
